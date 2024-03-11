@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "obo-fastapi"
+version = "0.1.0"
+description = "Backend for OBO"
+authors = ["Yue2u <beloleg225@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+sqlmodel = "^0.0.16"
+black = "^24.2.0"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+alembic = "^1.13.1"
+asyncpg = "^0.29.0"
+uvicorn = "^0.27.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = "^3.3.0"
+
+[flake8]
+max-line-length = 120
+exclude = ".git, __pycache__, alembic"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

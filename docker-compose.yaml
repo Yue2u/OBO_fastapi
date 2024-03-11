@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:15-alpine
+    expose:
+      - 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "obo_db"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+
+  backend:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.application:fastapi_app --host "0.0.0.0" --proxy-headers --reload"
+    expose:
+      - 8000
+    depends_on:
+      - db
+    env_file:
+      - .env.docker
+    volumes:
+      - ./:/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`localhost`)"
+
+  traefik:
+    image: traefik:v2.10
+    ports:
+      - 80:80
+      - 8081:8080
+    volumes:
+      - "./traefik.toml:/etc/traefik/traefik.toml"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+
+volumes:
+  db_data:
+  mongodb_data:
